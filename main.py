@@ -1,11 +1,11 @@
 import pandas as pd
 
-from utils import DataIntegrityChecker,EDA
+from utils import load_data,DataIntegrityChecker,EDA
 from sentiment_analysis import SentimentAnalysis
-from utils import load_data
+
 
 #load dataset
-df = pd.read_csv("archive/Reviews.csv")
+df = load_data("archive/Reviews.csv")
 print(df.head())
 print(df.columns)
 
@@ -29,16 +29,17 @@ print(df.head())
 # Exploratory data analysis
 eda = EDA(dataframe=df)
 eda.describe_data()
-#eda.plot_distribution_of_column(column='Sentiment')
-#eda.plot_review_length_distribution(column='Text')
-#eda.generate_wordcloud(column='Text')
+eda.plot_distribution_of_column(column='Sentiment')
+eda.plot_review_length_distribution(column='Text')
+# to generaet world cloud image
+eda.generate_wordcloud(column='Text')
 
 # sentimental analysis
 sa = SentimentAnalysis(dataframe=df)
 sa.preprocess_data()
 x_train, x_test, y_train, y_test = sa.split_data()
 x_train_tfidf, x_test_tfidf = sa.Vectorize_data(x_train, x_test)
-sa.build_model(x_test_tfidf, y_train)
+sa.build_model(x_train_tfidf, y_train)
 
 # prediction 
 y_pred = sa.predict_y(x_test_tfidf)
